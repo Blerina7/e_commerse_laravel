@@ -14,6 +14,15 @@ return new class extends Migration
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->foreignId('order_id')->constrained('orders')->cascadeOnDelete();
+            $table->foreignId('variant_id')->constrained('product_variant')->restrictOnDelete();
+            $table->string('product_name');
+            $table->string('variant_size');
+            $table->string('variant_color');
+            $table->string('variant_sku');
+            $table->integer('quantity');
+            $table->decimal('unit_price', 10, 2);
+            $table->decimal('subtotal', 10, 2);
         });
     }
 

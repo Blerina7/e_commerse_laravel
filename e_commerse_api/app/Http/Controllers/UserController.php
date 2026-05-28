@@ -111,13 +111,17 @@ class UserController extends Controller
     {
         if($user->role =='admin'){
             return response()->json([
-                'message' =>'U cant delete a user'
+                'message' =>'U cant delete an admin'
             ] , 403 );
         }
         $user ->delete();
             return response()->json([
                 'mesage'=>'User deleted'
             ],204);
+
+    }
+
+    public function filter(Request $request ){
 
     }
 }

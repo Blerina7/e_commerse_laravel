@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import api from '../api';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Register = () => {
+    const navigate = useNavigate();
     // 1. Ruajtja e të dhënave të formës në një objekt të vetëm shteti
     const [formData, setFormData] = useState({
         name: '',
@@ -17,6 +18,7 @@ const Register = () => {
     // 2. Ruajtja e erroreve për çdo fushë vizualisht
     const [errors, setErrors] = useState({});
     const [serverMessage, setServerMessage] = useState({ type: '', text: '' });
+    const [loading, setLoading] = useState(false);
 
     // Funksioni që kap çdo shtypje tasti dhe përditëson shtetin automatikisht
     const handleChange = (e) => {
@@ -92,35 +94,45 @@ const Register = () => {
 
     // NISJA E TË DHËNAVE DREJT LARAVEL API
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Ndalon refresh-in e faqes që bënte HTML e vjetër
+        e.preventDefault();
         setServerMessage({ type: '', text: '' });
-        const response = await api.post('/register', formData);
+        setErrors({});
 
-        if (validateForm()) {
-            try {
-                // Thërrasim endpoint-in tënd të regjistrimit në Laravel
-                const response = await axios.post('http://127.0.0.1:8000/api/register', {
-                    name: formData.name,
-                    last_name: formData.surname, // Përshtatur me 'last_name' të Backend-it
-                    email: formData.email,
-                    birth_date: formData.birthday, // Përshtatur me 'birth_date' të Backend-it
-                    password: formData.password,
-                    password_confirmation: formData.confirm // Laravel kërkon këtë emër për konfirmim
-                });
+        if (!validateForm()) {
+            return;
+        }
 
-                setServerMessage({ type: 'success', text: 'Regjistrimi u krye me sukses! Ju lutem verifikoni email-in.' });
-                
-                // Pastrojmë formën pas suksesit
-                setFormData({ name: '', surname: '', email: '', birthday: '', password: '', confirm: '', agree: false });
+        setLoading(true);
+        console.log('Submitting register form', formData);
 
-            } catch (error) {
-                // Nëse Laravel kthen errore validimi (psh email ekziston), i kapim këtu
-                if (error.response && error.response.data.errors) {
-                    setErrors(error.response.data.errors);
-                } else {
-                    setServerMessage({ type: 'error', text: 'Ndodhi një gabim në server. Provoni përsëri.' });
-                }
+        try {
+            const response = await api.post('/register', {
+                name: formData.name,
+                last_name: formData.surname,
+                email: formData.email,
+                birth_date: formData.birthday,
+                password: formData.password,
+                password_confirmation: formData.confirm
+            });
+
+            setServerMessage({ type: 'success', text: 'Regjistrimi u krye me sukses! Ju lutem verifikoni email-in.' });
+            localStorage.setItem('verify_email', formData.email);
+            setFormData({ name: '', surname: '', email: '', birthday: '', password: '', confirm: '', agree: false });
+            navigate('/verify', { state: { email: formData.email } });
+        } catch (error) {
+            console.error('Register error', error);
+
+            if (error.response && error.response.data.errors) {
+                setErrors(error.response.data.errors);
+            } else if (error.response && error.response.data.message) {
+                setServerMessage({ type: 'error', text: error.response.data.message });
+            } else if (error.message) {
+                setServerMessage({ type: 'error', text: `Network error: ${error.message}` });
+            } else {
+                setServerMessage({ type: 'error', text: 'Ndodhi një gabim në server. Provoni përsëri.' });
             }
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -235,10 +247,12 @@ const Register = () => {
                             {errors.agree && <div className="text-danger small">{errors.agree}</div>}
                         </div>
 
-                        <button type="submit" className="btn btn-primary block full-width m-b">Register</button>
+                        <button type="submit" className="btn btn-primary block full-width m-b" disabled={loading}>
+                            {loading ? 'Registering...' : 'Register'}
+                        </button>
 
                         <p className="text-muted text-center"><small>Already have an account?</small></p>
-                        <a className="btn btn-sm btn-white btn-block" href="/login">Login</a>
+                        <a className="btn btn-sm btn-white btn-block"><Link className="btn btn-sm btn-white btn-block" to="/login">Login</Link></a>
                     </form>
                     
                     <p className="m-t"> 
