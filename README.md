@@ -1,9 +1,9 @@
-Mini Amazon — Shoe Store
+#Mini Amazon — Shoe Store
 Welcome to Mini Amazon, a full-stack e-commerce web application dedicated to shoe shopping. This project features a highly secure, scalable Laravel API on the backend and a fast, dynamic React single-page application on the frontend.
 
 It includes user authentication, automated email verification, role-based product management (Admin, Manager, Customer), and smart product filtering.
 
- Project Structure
+ #Project Structure
 To keep things modular and clean, the project is divided into two completely independent directories:
 
 Plaintext
@@ -47,46 +47,46 @@ UI Layout: Inspinia Framework (Bootstrap powered)
  Getting Started
 To run this project locally, you will need two separate terminal windows open.
 
-1. Backend Setup (Laravel)
+#1. Backend Setup (Laravel)
 Bash
-# Navigate to backend folder
+#### Navigate to backend folder
 cd backend
 
-# Install PHP dependencies
+#### Install PHP dependencies
 composer install
 
-# Set up your environment file (.env) and configure your DB & Mailtrap credentials
+#### Set up your environment file (.env) and configure your DB & Mailtrap credentials
 cp .env.example .env
 
-# Generate application key
+#### Generate application key
 php artisan key:generate
 
-# Run migrations to build the database tables
+#### Run migrations to build the database tables
 php artisan migrate
 
-# Link the storage folder so React can display product images
+####Link the storage folder so React can display product images
 php artisan storage:link
 
-# Start the local development server
+#### Start the local development server
 php artisan serve
 Your backend will be live at: http://127.0.0.1:8000
 
-2. Frontend Setup (React)
+#. Frontend Setup (React)
 Bash
-# Navigate to frontend folder
+#### Navigate to frontend folder
 cd ../frontend
 
-# Install JavaScript dependencies
+##### Install JavaScript dependencies
 npm install
 
-# Install routing capabilities if not already installed
+####Install routing capabilities if not already installed
 npm install react-router-dom
 
-# Launch the React dev server via Vite
+#### Launch the React dev server via Vite
 npm run dev
 Your frontend will be live at: http://localhost:5173
 
- API Communication
+ #API Communication
 All frontend API calls are centralized inside src/api.js. This instance automatically injects the active user's Sanctum token from localStorage into the headers of every outgoing request, ensuring seamless and secure protected route access.
 
 JavaScript
