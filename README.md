@@ -1,9 +1,9 @@
-#Mini Amazon — Shoe Store
+# Mini Amazon — Shoe Store
 Welcome to Mini Amazon, a full-stack e-commerce web application dedicated to shoe shopping. This project features a highly secure, scalable Laravel API on the backend and a fast, dynamic React single-page application on the frontend.
 
 It includes user authentication, automated email verification, role-based product management (Admin, Manager, Customer), and smart product filtering.
 
- #Project Structure
+ # Project Structure
 To keep things modular and clean, the project is divided into two completely independent directories:
 
 Plaintext
@@ -25,8 +25,8 @@ Smart Catalog: Product pagination paired with server-side search, gender categor
 
 File Storage: Automated product and profile image uploads with automatic server cleanup when files are updated or deleted.
 
- Tech Stack
-Backend
+ ## Tech Stack
+### Backend
 Framework: Laravel
 
 Authentication: Laravel Sanctum (Bearer Tokens)
@@ -35,7 +35,7 @@ Database: MySQL / PostgreSQL
 
 Tools: Mailtrap (Email testing), Carbon (Date manipulations)
 
-Frontend
+### Frontend
 Build Tool: Vite + React
 
 Routing: React Router DOM
@@ -47,7 +47,7 @@ UI Layout: Inspinia Framework (Bootstrap powered)
  Getting Started
 To run this project locally, you will need two separate terminal windows open.
 
-#1. Backend Setup (Laravel)
+# 1. Backend Setup (Laravel)
 Bash
 #### Navigate to backend folder
 cd backend
@@ -71,7 +71,7 @@ php artisan storage:link
 php artisan serve
 Your backend will be live at: http://127.0.0.1:8000
 
-#. Frontend Setup (React)
+# 2. Frontend Setup (React)
 Bash
 #### Navigate to frontend folder
 cd ../frontend
@@ -86,7 +86,7 @@ npm install react-router-dom
 npm run dev
 Your frontend will be live at: http://localhost:5173
 
- #API Communication
+ # API Communication
 All frontend API calls are centralized inside src/api.js. This instance automatically injects the active user's Sanctum token from localStorage into the headers of every outgoing request, ensuring seamless and secure protected route access.
 
 JavaScript
