@@ -9,17 +9,43 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    //te gjithe produktet
-    public function index()
-    {
-        $query=Product::query();
-       
+    //produktet=search
+    public function index(Request $request)
+{
+    $query = Product:: query(); //with([ 'brand','category','images']);  kjo eshte per relationships
 
-
-        $products= Product::paginate(20);
     
-        return response() ->json($products,200 );
+    if ($request->filled('search')) {
+      $terms = collect(preg_split('/[\s,]+/', trim($request->input('search')), -1, PREG_SPLIT_NO_EMPTY))
+        ->map(fn($term) => mb_strtolower($term))
+        ->values();
+
+      $query->where(function($q) use ($terms) {
+        foreach ($terms as $term) {
+            $q->where(function($sub) use ($term) {
+                $sub->where('name', 'LIKE', "%$term%")
+                    ->orWhere('description', 'LIKE', "%$term%");
+            });
+        }
+      });
     }
+
+    if ($request->filled('min_price')) {
+        $query->where('base_price', '>=', $request->input('min_price'));
+    }
+
+    if ($request->filled('max_price')) {
+        $query->where('base_price', '<=', $request->input('max_price'));
+    }
+    
+    if ($request->filled('gender')){
+        $query ->where('gender','LIKE', '%' . $request->input('gender') . '%');
+    }
+
+
+    $products = $query->paginate(20);
+    return response()->json($products, 200);
+}
 
    //ruaj ne db
     public function store(Request $request)
@@ -98,6 +124,6 @@ class ProductController extends Controller
         $product->delete();
         return response()->json([
         'message'=>'Product was deltetd with success*'
-        ],204);
+        ],200);
     }
 }

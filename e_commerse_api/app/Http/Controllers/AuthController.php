@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Password;
 use App\Mail\VerificationMail;
 use App\Http\Requests\RegisterRequest;
@@ -109,6 +111,72 @@ class AuthController extends Controller
             'token' => $token
         ], 200);
     }
+    
+
+   
+  
+
+    // forgot pass
+    public function forgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email'
+        ]);
+
+        $code = Str::random(6); 
+        DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $request->email],
+            [
+                'email'      => $request->email,
+                'token'      => $code,
+                'created_at' => now()
+            ]
+        );
+
+        
+        Mail::raw("Your code: $code", function($message) use ($request) {
+            $message->to($request->email)
+                    ->subject('Reset Pass');
+        });
+
+        return response()->json(['message' => 'Your code was sent.'], 200);
+    }
+
+    // reset pass
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email'    => 'required|email',
+            'code'     => 'required|string',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+       
+        $record = DB::table('password_reset_tokens')
+                    ->where('email', $request->email)
+                    ->where('token', $request->code)
+                    ->first();
+
+        if (!$record) {
+            return response()->json(['message' => 'Your code is wrong.'], 422);
+        }
+
+        if (now()->diffInMinutes($record->created_at) > 15) {
+            return response()->json(['message' => '15 minutes have passed.'], 422);
+        }
+
+       
+        User::where('email', $request->email)
+            ->update(['password' => Hash::make($request->password)]);
+
+       
+        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+
+        return response()->json(['message' => 'Your password was reset.'], 200);
+    }
+
+
+
 
     //logout
     public function logout(Request $request)
