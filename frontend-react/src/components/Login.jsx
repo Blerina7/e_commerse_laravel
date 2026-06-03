@@ -98,7 +98,7 @@ const Login = () => {
                     <div>
                         <h1 className="logo-name">IN+</h1>
                     </div>
-                    <h3>Welcome to IN+</h3>
+                    <h3>Welcome to SHOE STORE</h3>
                     <p>Login in. To see it in action.</p>
 
                     {/* Alerter në rast se të dhënat janë gabim në server */}
