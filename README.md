@@ -1,5 +1,5 @@
 # Mini Amazon — Shoe Store
-Welcome to Mini Amazon, a full-stack e-commerce web application dedicated to shoe shopping. This project features a highly secure, scalable Laravel API on the backend and a fast, dynamic React single-page application on the frontend.
+This is a full-stack e-commerce web application dedicated to shoe shopping. This project features a highly secure, scalable Laravel API on the backend and a fast, dynamic React single-page application on the frontend.
 
 It includes user authentication, automated email verification, role-based product management (Admin, Manager, Customer), and smart product filtering.
 
@@ -50,7 +50,7 @@ To run this project locally, you will need two separate terminal windows open.
 # 1. Backend Setup (Laravel)
 Bash
 #### Navigate to backend folder
-cd backend
+cd e_commerse_api
 
 #### Install PHP dependencies
 composer install
@@ -74,7 +74,7 @@ Your backend will be live at: http://127.0.0.1:8000
 # 2. Frontend Setup (React)
 Bash
 #### Navigate to frontend folder
-cd ../frontend
+cd ../frontend-react
 
 ##### Install JavaScript dependencies
 npm install
