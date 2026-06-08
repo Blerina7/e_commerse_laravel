@@ -30,14 +30,19 @@ class User extends Authenticatable
     use HasFactory, HasApiTokens, Notifiable;
     
 
-    /**
-     * Marrëdhënia: Një përdorues mund të ketë shumë porosi (Orders)
-     */
-    public function orders()
+   
+    public function orders() :HasMany
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::class); //1 perdorues mund te kete shume porosi
     }
 
+    public function address():HasMany{
+        return $this->hasMany(Address::class); //1 perdorues mund te kete shume adresa
+    }
+   
+    public function cartItem():HasMany{
+        return $this->hasMany(CartItem::class); //1 perdorues mudn te ket shume gjera ne karte
+    }
     /**
      * Get the attributes that should be cast.
      *
@@ -52,7 +57,6 @@ class User extends Authenticatable
             'birth_date' => 'date',
         ];
     }
-    //public function posts() : HasMany{
-      //  return $this ->hasMany(Post::class, 'author_id');
-    //}
+    
+
 }
