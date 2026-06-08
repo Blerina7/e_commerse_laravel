@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\FirstController ;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
 
 //Login+Register
 Route::post('/register', [AuthController::class,'register']);
@@ -29,6 +30,12 @@ Route::get('/products/{product}',[ProductController::class,'show']);
 Route::post('/update-product',[ProductController::class,'update']);
 Route::delete('/delete-product',[ProductController::class,'destroy']);
 Route::post('/store-product',[ProductController::class,'store']);
+
+//Orders
+Route::get('/orders', [OrderController::class, 'index']);
+Route::post('/orders', [OrderController::class, 'store']);
+Route::delete('/orders/{order}', [OrderController::class, 'destroy']);
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();

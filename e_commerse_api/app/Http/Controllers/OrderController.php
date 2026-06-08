@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\Product;
+use App\Models\ProductVariant; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
 
-    public function index(Request $request)
+       public function index(Request $request)
     {
         $orders = Order::with('products')
             ->where('user_id', $request->user()->id)
@@ -19,40 +19,40 @@ class OrderController extends Controller
         return response()->json($orders, 200);
     }
 
-   
     public function store(Request $request)
     {
         $data = $request->validate([
             'items' => ['required', 'array', 'min:1'],
-            'items.*.product_id' => ['required', 'exists:products,id'], // Ndryshuar nga 'uuid' në 'exists' nëse përdor ID normale (1,2,3)
+            'items.*.product_variant_id' => ['required', 'exists:product_variants,id'], 
             'items.*.quantity' => ['required', 'integer', 'min:1'],
         ]);
 
         $items = $data['items'];
 
         return DB::transaction(function () use ($request, $items) {
-            $productIds = collect($items)->pluck('product_id')->unique()->values();
+            $variantIds = collect($items)->pluck('product_variant_id')->unique()->values();
 
-           
-            $products = Product::whereIn('id', $productIds)
+          
+            $variants = ProductVariant::with('product')
+                ->whereIn('id', $variantIds)
                 ->lockForUpdate()
                 ->get()
                 ->keyBy('id');
 
-           
+       
             foreach ($items as $item) {
-                $product = $products->get($item['product_id']);
+                $variant = $variants->get($item['product_variant_id']);
 
-                if (!$product) {
-                    return response()->json(['message' => 'Produkti nuk u gjet.'], 404);
+                if (!$variant) {
+                    return response()->json(['message' => 'The product was not found.'], 404);
                 }
 
                 $requestedQty = (int) $item['quantity'];
 
-               
-                if ($requestedQty > (int) $product->stock) { 
+            
+                if ($requestedQty > (int) $variant->stock_quantity) { 
                     return response()->json([
-                        'message' => "Not enough quantity{$product->name}.In stock: {$product->stock}"
+                        'message' => "Not enough quantity fot {$variant->product->name} (Number: {$variant->size}). In stock: {$variant->stock_quantity}"
                     ], 422);
                 }
             }
@@ -61,18 +61,17 @@ class OrderController extends Controller
             $orderItems = [];
             $now = now();
 
-           
+            
             foreach ($items as $item) {
-                $product = $products->get($item['product_id']);
+                $variant = $variants->get($item['product_variant_id']);
                 $qty = (int) $item['quantity'];
 
-                
-                $price = $product->price_cents ?? ($product->base_price * 100); 
+                $price = $variant->product->price_cents ?? ($variant->product->base_price * 100); 
                 $totalCents += $price * $qty;
 
                 $orderItems[] = [
                     'order_id' => null, 
-                    'product_id' => $product->id,
+                    'product_id' => $variant->product_id, 
                     'quantity' => $qty,
                     'unit_price_cents' => $price,
                     'created_at' => $now,
@@ -80,17 +79,16 @@ class OrderController extends Controller
                 ];
 
                
-                $product->decrement('stock', $qty); 
+                $variant->decrement('stock_quantity', $qty); 
             }
 
-           
+          
             $order = Order::create([
                 'user_id' => $request->user()->id,
                 'total_cents' => $totalCents,
                 'status' => 'pending',
             ]);
 
-           
             foreach ($orderItems as &$orderItem) {
                 $orderItem['order_id'] = $order->id;
             }
@@ -99,21 +97,21 @@ class OrderController extends Controller
             DB::table('order_product')->insert($orderItems);
 
             return response()->json([
-                'message' => 'Porosia u krye me sukses!',
+                'message' => 'The order was successful!',
                 'order_id' => $order->id,
             ], 201);
         });
     }
 
-    
-    public function destroy(Request $request, Order $order)
+
+      public function destroy(Request $request, Order $order)
     {
         if ($order->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'I paautorizuar.'], 403);
+            return response()->json(['message' => 'Not an admin.'], 403);
         }
 
         $order->delete();
 
-        return response()->json(['message' => 'Porosia u fshi me sukses.'], 200);
+        return response()->json(['message' => 'The order was deleted.'], 200);
     }
 }
