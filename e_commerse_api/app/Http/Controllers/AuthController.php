@@ -43,7 +43,7 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'message' => 'Regjistrimi u krye me sukses. Ju lutem kontrolloni email-in tuaj per kodin e verifikimit.',
+            'message' => 'Register was successful. Check ur email for the verification code.',
             'verification_code_test' => $verificationCode 
         ], 201);
     }

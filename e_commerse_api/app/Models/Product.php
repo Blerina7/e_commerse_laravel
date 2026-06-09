@@ -13,14 +13,14 @@ use App\Models\Brand;
 
 
 #[Fillable([
+        'category_id',
+        'brand_id',
         'name',
         'slug',
         'description',
         'gender',
         'is_active',
-        'is_featured',
-        'category_id',
-        'brand_id'
+        'is_featured'
 ])]
 
 class Product extends Model

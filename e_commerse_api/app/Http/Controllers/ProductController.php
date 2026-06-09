@@ -65,9 +65,22 @@ class ProductController extends Controller
             $data['photo'] = $path;
         }
 
-        $product= Product::create($data);
-        return response() ->json([$product],201);
-          
+        //$product= Product::create($data);
+        //return response() ->json([$product],201);
+     
+        $product = new \App\Models\Product();
+    
+  
+        $product->category_id = $request->category_id;
+        $product->brand_id = $request->brand_id;
+        $product->name = $request->name;
+        $product->slug = $request->slug;
+        $product->gender = $request->gender;
+        $product->base_price = $request->base_price;
+  
+        $product->save();
+
+        return response()->json($product, 201);
     }
 
    //trego 1 produkt specifik

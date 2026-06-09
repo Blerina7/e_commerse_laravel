@@ -23,7 +23,7 @@ class OrderController extends Controller
     {
         $data = $request->validate([
             'items' => ['required', 'array', 'min:1'],
-            'items.*.product_variant_id' => ['required', 'exists:product_variants,id'], 
+            'items.*.product_variant_id' => ['required', 'exists:product_variant,id'], 
             'items.*.quantity' => ['required', 'integer', 'min:1'],
         ]);
 

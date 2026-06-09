@@ -21,6 +21,8 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 
 class ProductVariant extends Model
 {
+
+    protected $table = 'product_variant';
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
