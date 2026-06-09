@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('color');
             $table->integer('stock_quantity');
             $table->decimal('price_override', 10,2)->nullable();
+            $table->integer('price_cents'); 
             $table->boolean('is_available')->default(true);
         });
     }

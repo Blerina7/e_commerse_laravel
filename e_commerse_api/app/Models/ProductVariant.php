@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
     'color_hex',
     'stock_quantity', 
     'price_override', 
+    'price_cents',
     'is_available'
 ])]
 

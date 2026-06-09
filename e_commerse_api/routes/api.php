@@ -8,14 +8,17 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\BrandController;
 
 //Login+Register
 Route::post('/register', [AuthController::class,'register']);
 Route::post('/verify-email', [AuthController::class,'verifyEmail']);
 Route::post('/login', [AuthController::class,'login']);
 Route::post('/logut', [AuthController::class,'logut']);
-Route::post('/reset-password', [AuthController::class,'resetPassword']);
 Route::post('/forgot-password', [AuthController::class,'forgotPassword']);
+Route::post('/reset-password', [AuthController::class,'resetPassword']);
+
 
 //Menaxhimi i userave
 Route::get('/users',[UserController::class,'index']);
@@ -35,6 +38,14 @@ Route::post('/store-product',[ProductController::class,'store']);
 Route::get('/orders', [OrderController::class, 'index']);
 Route::post('/orders', [OrderController::class, 'store']);
 Route::delete('/orders/{order}', [OrderController::class, 'destroy']);
+
+//Category
+Route::get('/category', [CategoryController::class, 'index']);
+Route::post('/category', [CategoryController::class, 'store']);
+
+//Brand
+Route::get('/brand', [BrandController::class, 'index']);
+Route::post('/brand', [BrandController::class, 'store']);
 
 
 Route::get('/user', function (Request $request) {

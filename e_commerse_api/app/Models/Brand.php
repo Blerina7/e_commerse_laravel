@@ -18,7 +18,7 @@ use App\Models\Product;
 class Brand extends Model
 {
    
-
+    protected $table = 'brand';
     public function products(): HasMany {
     return $this->hasMany(Product::class);} //1 brand ka shume produkte
     

@@ -11,10 +11,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'parent_id', 'name', 'slug', 'description', 'image_url', 'sort_order', 'is_active'
 ])]
 
+
+
 class Category extends Model
 {
   
-   
+   protected $table = 'category';
  
     // Vetë-referenca (sub-kategori)
     public function parent(): BelongsTo

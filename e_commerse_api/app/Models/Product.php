@@ -16,8 +16,6 @@ use App\Models\Brand;
         'name',
         'slug',
         'description',
-        'base_price',
-        'sale_price',
         'gender',
         'is_active',
         'is_featured',
