@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 
-class ProductVariantController extends Controller
+class InventoryController extends Controller
 {
    //merr variantet per 1 produkt specifik
-    public function getByProduct(ProductVariant $productId)
+    public function index(ProductVariant $productId)
     {
         $variants = ProductVariant::where('product_id', $productId)
             ->available()        //  scopeAvailable() nga modeli
@@ -112,7 +112,7 @@ class ProductVariantController extends Controller
     }
 
    //fshi variantin
-    public function destroy($id)
+    public function destroy(ProductVariant $id)
     {
         $variant = ProductVariant::findOrFail($id);
 

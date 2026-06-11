@@ -1,60 +1,74 @@
 <?php
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TaskController;
-use App\Http\Controllers\Api\V1\FirstController ;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BrandController;
 
-//Login+Register
-Route::post('/register', [AuthController::class,'register']);
-Route::post('/verify-email', [AuthController::class,'verifyEmail']);
-Route::post('/login', [AuthController::class,'login']);
-Route::post('/logut', [AuthController::class,'logut']);
-Route::post('/forgot-password', [AuthController::class,'forgotPassword']);
-Route::post('/reset-password', [AuthController::class,'resetPassword']);
+//publike
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/verify-email', [AuthController::class, 'verifyEmail']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
-
-//Menaxhimi i userave
-Route::get('/users',[UserController::class,'index']);
-Route::get('/user/{user}',[UserController::class,'show']);
-Route::post('/update-user',[UserController::class,'update']);
-Route::delete('/delete-user',[UserController::class,'destroy']);
-Route::get('/filter',[UserController::class,'filter']);
-
-//Products
-Route::get('/products',[ProductController::class,'index']);
-Route::get('/products/{product}',[ProductController::class,'show']);
-Route::post('/update-product',[ProductController::class,'update']);
-Route::delete('/delete-product',[ProductController::class,'destroy']);
-Route::post('/store-product',[ProductController::class,'store']);
-
-//Orders
-Route::get('/orders', [OrderController::class, 'index']);
-Route::post('/orders', [OrderController::class, 'store']);
-Route::delete('/orders/{order}', [OrderController::class, 'destroy']);
-
-//Category
+// Produktet dhe kategorite shihen nga te gjithe(publike)
+Route::get('/products', [ProductController::class, 'index']);
+Route::get('/products/{product}', [ProductController::class, 'show']);
 Route::get('/category', [CategoryController::class, 'index']);
-Route::post('/category', [CategoryController::class, 'store']);
-
-//Brand
 Route::get('/brand', [BrandController::class, 'index']);
-Route::post('/brand', [BrandController::class, 'store']);
+
+// Variantet 
+Route::get('/products/{productId}/variants', [InventoryController::class, 'index']);
+Route::get('/variants/{id}', [InventoryController::class, 'show']);
 
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+//authenticated duhet login 
+Route::middleware('auth:sanctum')->group(function () {
+
+    // Auth
+    Route::post('/logout', [AuthController::class, 'logout']); 
+    Route::get('/user', fn(Request $r) => $r->user());
+
+    // Porosite e userit -vetem useri i sheh dhe i ben 
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::post('/orders', [OrderController::class, 'store']);
+
+    // Stock — ulet kur bën porosi useri
+    Route::patch('/variants/{id}/stock', [InventoryController::class, 'decrementStock']);
 
 
+   //admin only
+    Route::middleware('role:admin')->group(function () {
 
+        // Menaxhimi i userave
+        Route::get('/users', [UserController::class, 'index']);
+        Route::get('/users/{user}', [UserController::class, 'show']);
+        Route::put('/users/{user}', [UserController::class, 'update']);
+        Route::delete('/users/{user}', [UserController::class, 'destroy']);
+        Route::get('/users/filter', [UserController::class, 'filter']);
 
+        // Produktet — CRUD
+        Route::post('/products', [ProductController::class, 'store']);
+        Route::put('/products/{product}', [ProductController::class, 'update']);
+        Route::delete('/products/{product}', [ProductController::class, 'destroy']);
 
+        // Inventory/Variante — CRUD
+        Route::post('/variants', [InventoryController::class, 'store']);
+        Route::put('/variants/{id}', [InventoryController::class, 'update']);
+        Route::delete('/variants/{id}', [InventoryController::class, 'destroy']);
+
+        // Kategori & Brand — menaxhimi
+        Route::post('/category', [CategoryController::class, 'store']);
+        Route::post('/brand', [BrandController::class, 'store']);
+
+        // Porositë 
+        Route::delete('/orders/{order}', [OrderController::class, 'destroy']);
+    });
+});
 
 

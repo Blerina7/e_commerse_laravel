@@ -25,6 +25,10 @@ use App\Models\Brand;
 
 class Product extends Model
 {
+
+   protected $table = 'product';
+
+  
    use hasFactory;
   
   public function brand() : BelongsTo {
