@@ -12,9 +12,11 @@ mini-amazon/
 
 ├── backend/ 
  Laravel 13 API (Models, Migrations, Controllers)
+ 
 └── frontend/    # React SPA (Vite, React Router, Axios, Inspinia UI)
 
- Key Features
+ Key Features:
+ 
 Complete Auth Flow: Secure registration and login using Laravel Sanctum tokens.
 
 Email Verification: Integration with Mailtrap to send and verify secure numeric codes upon registration.
