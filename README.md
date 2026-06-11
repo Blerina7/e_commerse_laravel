@@ -6,10 +6,14 @@ It includes user authentication, automated email verification, role-based produc
  # Project Structure
 To keep things modular and clean, the project is divided into two completely independent directories:
 
-Plaintext
+
+
 mini-amazon/
-├── backend/     # Laravel 13 API (Models, Migrations, Controllers)
+
+├── backend/ 
+# Laravel 13 API (Models, Migrations, Controllers)
 └── frontend/    # React SPA (Vite, React Router, Axios, Inspinia UI)
+
  Key Features
 Complete Auth Flow: Secure registration and login using Laravel Sanctum tokens.
 
