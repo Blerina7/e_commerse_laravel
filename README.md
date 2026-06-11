@@ -11,7 +11,7 @@ To keep things modular and clean, the project is divided into two completely ind
 mini-amazon/
 
 ├── backend/ 
-# Laravel 13 API (Models, Migrations, Controllers)
+ Laravel 13 API (Models, Migrations, Controllers)
 └── frontend/    # React SPA (Vite, React Router, Axios, Inspinia UI)
 
  Key Features
